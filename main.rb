@@ -21,6 +21,7 @@ module Input
       Integer(input)
     rescue StandardError
       puts 'Input can only be an Integer!'.red if prints
+      puts 'Try again!'.italic if prints
       return nil
     end
 
@@ -29,6 +30,7 @@ module Input
 
     # Error! not a number
     puts "Input can only be in range #{start} to #{ending}!".red if prints
+    puts 'Try again!'.italic if prints
   end
 
   private
