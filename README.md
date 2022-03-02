@@ -10,4 +10,7 @@ ruby main.rb
 
 # So how does it look like?
 
-TOOD :D
+
+
+https://user-images.githubusercontent.com/85732279/156404631-187fb1c2-80b0-4b83-ad0c-3332797cc05f.mp4
+
