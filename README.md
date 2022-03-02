@@ -11,6 +11,9 @@ ruby main.rb
 # So how does it look like?
 
 
+(Video at ~170% speed)
 
-https://user-images.githubusercontent.com/85732279/156404631-187fb1c2-80b0-4b83-ad0c-3332797cc05f.mp4
+https://user-images.githubusercontent.com/85732279/156414553-5dc6465f-6859-49d7-94a7-9dd2a9a9756c.mp4
+
+
 
