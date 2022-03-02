@@ -8,9 +8,9 @@ class Game
     # it can only have one of the following values
     # `''`, `'X'`, `'O'`
     # @type [Array<Array<String>>]
-    @board = [['', '', ''],
-              ['', '', ''],
-              ['', '', '']]
+    @board = [[nil, nil, nil],
+              [nil, nil, nil],
+              [nil, nil, nil]]
     # Can be 0 or 1
     # 0 = `O`
     # 1 = `X`
@@ -18,9 +18,10 @@ class Game
   end
 
   def play(x, y)
-    return puts "You can't choose that tile!" unless @board[y][x].empty?
+    return puts "You can't choose that tile!" unless @board[y][x].nil?
 
     @board[y][x] = current_letter
+    p "game over #{game_over?}"
     next_turn
   end
 
@@ -34,26 +35,38 @@ class Game
     @current_turn.zero? ? 'X' : 'O'
   end
 
+  # @return [Boolean]
   def game_over?
-    wining_rows? ||
-      wining_columns? ||
-      wining_diagonals? ||
+    winning_rows? ||
+      winning_columns? ||
+      winning_diagonals? ||
       board_full?
   end
 
   private
 
-  def wining_rows?; end
+  def winning_rows?
+    @board.any? do |row|
+      # all elements are equal and no nils?
+      !row[0].nil? &&
+        row.uniq.size == 1
+    end
+  end
 
-  def wining_columns?; end
+  def winning_columns?
+    # transpose to use same algorithm as `winning_rows?`
+    @board.transpose.any? do |row|
+      # all elements are equal and no nils?
+      !row[0].nil? &&
+        row.uniq.size == 1
+    end
+  end
 
-  def wining_diagonals?; end
+  def winning_diagonals?
+    false
+  end
 
   def board_full?; end
 end
 
 a = Game.new
-
-p a.play(1, 1)
-p a.play(1, 1)
-p a.play(1, 2)
