@@ -53,7 +53,7 @@ class Game
   end
 
   def play
-    print_board false
+    print_board(clear = false)
     puts "You are player #{@current_turn + 1}"
     puts "Where do you want to place \"#{current_mark}\"?"
     p a = get_i_between(0, 2)
@@ -96,7 +96,13 @@ class Game
   # @param clear [Boolean]
   def print_board(clear = true)
     print "\033[2J\033[H" if clear
-    p @board
+    puts '┌───┬───┬───┐'
+
+    @board.each_with_index do |row, index|
+      printf("│ %1s │ %1s │ %1s │\n", row[0], row[1], row[2])
+      puts '├───┼───┼───┤' if index != 2
+    end
+    puts '└───┴───┴───┘'
   end
 
   private
