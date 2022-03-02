@@ -1,15 +1,47 @@
 # frozen_string_literal: true
 
+# rubocop:disable all
+# https://stackoverflow.com/questions/1489183/how-can-i-use-ruby-to-colorize-the-text-output-to-a-terminal
+class String
+def black;          "\e[30m#{self}\e[0m" end
+def red;            "\e[31m#{self}\e[0m" end
+def green;          "\e[32m#{self}\e[0m" end
+def brown;          "\e[33m#{self}\e[0m" end
+def blue;           "\e[34m#{self}\e[0m" end
+def magenta;        "\e[35m#{self}\e[0m" end
+def cyan;           "\e[36m#{self}\e[0m" end
+def gray;           "\e[37m#{self}\e[0m" end
+
+def bg_black;       "\e[40m#{self}\e[0m" end
+def bg_red;         "\e[41m#{self}\e[0m" end
+def bg_green;       "\e[42m#{self}\e[0m" end
+def bg_brown;       "\e[43m#{self}\e[0m" end
+def bg_blue;        "\e[44m#{self}\e[0m" end
+def bg_magenta;     "\e[45m#{self}\e[0m" end
+def bg_cyan;        "\e[46m#{self}\e[0m" end
+def bg_gray;        "\e[47m#{self}\e[0m" end
+
+def bold;           "\e[1m#{self}\e[22m" end
+def italic;         "\e[3m#{self}\e[23m" end
+def underline;      "\e[4m#{self}\e[24m" end
+def blink;          "\e[5m#{self}\e[25m" end
+def reverse_color;  "\e[7m#{self}\e[27m" end
+end
+# rubocop:enable all
+
+# Getting Input, heh
 module Input
   # gets an integer between `start` and `ending`
   # 'Q' or 'q' `exit`s if `quitable` is set to `true`
+  # prints error messages if `prints` is set to `true`
   # Return `Integer` on success, `nil` otherwise
   #
   # @param start [Integer]
   # @param ending [Integer]
   # @param quitable [Boolean]
+  # @param prints [Boolean]
   # @return [Integer]
-  def get_i_between(start, ending, quitable = true)
+  def get_i_between(start, ending, quitable = true, prints = true)
     input = gets.chomp
     exit_with_message if quitable && %w[q Q].include?(input)
 
@@ -17,11 +49,15 @@ module Input
     number = begin
       Integer(input)
     rescue StandardError
+      puts 'Input can only be an Integer!'.red if prints
       return nil
     end
 
     # check range
     return number if start <= number && number <= ending
+
+    # Error! not a number
+    puts "Input can only be in range #{start} to #{ending}!".red if prints
   end
 
   private
@@ -36,7 +72,7 @@ end
 class Game
   include Input
 
-  def initialize
+  def initialize(player_names = { 0 => '0', 1 => '1' })
     # This is a `Game` Board.
     # that is composed of 3x3 matrix
     # it can only have one of the following values
@@ -50,13 +86,20 @@ class Game
     # 1 = `X`
     @current_turn = 0
     @marks = { 0 => 'O', 1 => 'X' }
+    @player_names = player_names
   end
 
   def play
-    print_board(clear = false)
-    puts "You are player #{@current_turn + 1}"
-    puts "Where do you want to place \"#{current_mark}\"?"
-    p a = get_i_between(0, 2)
+    print_board(clear = true)
+    puts 'You are player: '.blue + current_player.to_s.blue.bold
+    puts "Where do you want to place \"#{current_mark}\"?".bold
+    puts 'Enter Column Number (between 0 and 2)'
+    until x = get_i_between(0, 2); end
+    puts 'Enter Row Number (between 0 and 2)'
+    until y = get_i_between(0, 2); end
+
+    # sleep on error, so that the message is readable!
+    sleep 1 unless place_mark(x, y)
   end
 
   # `x` and `y` can only be in range 0 <= `x` or `y` <=2
@@ -66,7 +109,7 @@ class Game
   # @return [Boolean]
   def place_mark(x, y)
     # place mark unsuccessful
-    return begin puts "You can't choose that tile!"; false end unless @board[y][x].nil?
+    return begin puts "You can't choose that tile!".red; false end unless @board[y][x].nil?
 
     @board[y][x] = current_mark
     next_turn
@@ -80,6 +123,10 @@ class Game
   # @return [String]
   def current_mark
     @marks[@current_turn]
+  end
+
+  def current_player
+    @player_names[@current_turn]
   end
 
   # @return [Boolean]
@@ -100,6 +147,7 @@ class Game
 
     @board.each_with_index do |row, index|
       printf("│ %1s │ %1s │ %1s │\n", row[0], row[1], row[2])
+      # don't want to print this on last row
       puts '├───┼───┼───┤' if index != 2
     end
     puts '└───┴───┴───┘'
@@ -141,16 +189,19 @@ end
 
 def main
   puts 'Starting a new game!'
-  game = Game.new
+  puts 'Choose names!'.blue
+  print 'Player 1> '.bold
+  player1 = gets.chomp
+  print 'Player 2> '.bold
+  player2 = gets.chomp
+
+  game = Game.new({ 0 => player1, 1 => player2 })
 
   game.play until game.game_over?
+  # Print the board for the last time!
+  game.print_board
 
-  puts "The winner is #{game}."
+  puts "The winner is #{game.current_player}."
 end
 
 main
-
-a = Game.new
-
-p a.place_mark(1, 2)
-p a.place_mark(1, 2)
