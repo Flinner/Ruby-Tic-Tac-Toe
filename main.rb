@@ -49,7 +49,7 @@ class Game
     # This is a `Game` Board.
     # that is composed of 3x3 matrix
     # it can only have one of the following values
-    # `''`, `'X'`, `'O'`
+    # `nil`, `'X'`, `'O'`
     # @type [Array<Array<String>>]
     @board = [[nil, nil, nil],
               [nil, nil, nil],
