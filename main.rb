@@ -183,7 +183,8 @@ def main
   game.play until game.game_over?
   # Print the board for the last time!
   game.print_board
-
+  # switch to next turn so that current_player is set to the actual winner
+  game.next_turn
   puts "The winner is #{game.current_player}."
 end
 
