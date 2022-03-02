@@ -159,7 +159,11 @@ class Game
 
   # @return [Boolean]
   def winning_diagonals?
-    false
+    !@board[1][1].nil? && ((
+    @board[0][0] == @board[1][1] && @board[1][1] == @board[2][2]
+  ) || (
+    @board[2][0] == @board[1][1] && @board[1][1] == @board[2][0]
+  ))
   end
 
   # @return [Boolean]
